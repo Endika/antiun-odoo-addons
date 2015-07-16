@@ -1,9 +1,10 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# Python source code encoding : https://www.python.org/dev/peps/pep-0263/
 ##############################################################################
 #
 #    OpenERP, Odoo Source Management Solution
-#    Copyright (c) 2014 Serv. Tecnol. Avanzados (http://www.serviciosbaeza.com)
-#                       Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
+#    Copyright (c) 2015 Antiun Ingeniería S.L. (http://www.antiun.com)
+#                       Antonio Espinosa <antonioea@antiun.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -21,19 +22,16 @@
 ##############################################################################
 
 {
-    'name': 'Link event to tasks',
+    'name': 'Remove email footer signature',
+    'category': 'Personalization',
     'version': '1.0',
-    'category': 'Marketing',
-    'author': 'Serv. Tecnolog. Avanzados - Pedro M. Baeza, '
-              'Antiun Ingeniería S.L.',
-    'website': 'http://www.serviciosbaeza.com, http://www.antiun.com',
     'depends': [
-        'event',
-        'project',
+        'mail',
     ],
-    'data': [
-        'views/event_event_view.xml',
-        'views/project_task_view.xml',
-    ],
-    "installable": True,
+    'author': 'Antiun Ingeniería S.L.',
+    'website': 'http://www.antiun.com',
+    'license': 'AGPL-3',
+    'demo': [],
+    'test': [],
+    'installable': True,
 }
