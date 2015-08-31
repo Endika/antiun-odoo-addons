@@ -4,6 +4,7 @@
 ##############################################################################
 from openerp import models, api, fields
 from datetime import timedelta
+import math
 
 
 class AccountInvoiceLine(models.Model):
@@ -18,7 +19,7 @@ class AccountInvoiceLine(models.Model):
         memb_lines = memb_line_model.search(
             [('partner', '=', invoice.partner_id.id)],
             order="date_to desc")
-        if memb_lines:
+        if memb_lines and memb_lines[0].date_to:
             date_from = (fields.Date.from_string(memb_lines[0].date_to) +
                          timedelta(days=1))
         else:
@@ -70,7 +71,8 @@ class AccountInvoiceLine(models.Model):
                             memb_line_model.create(membership_vals)
                     elif len(memb_lines) > quantity:
                         # Remove extra membership lines
-                        extra_number = len(memb_lines) - quantity
+                        extra_number = (
+                            len(memb_lines) - int(math.ceil(quantity)))
                         memb_lines[:extra_number].unlink()
         return super(AccountInvoiceLine, self).write(vals)
 
@@ -79,13 +81,15 @@ class AccountInvoiceLine(models.Model):
         memb_line_model = self.env['membership.membership_line']
         price_unit = vals.get('price_unit', 0.0)
         line = super(AccountInvoiceLine, self).create(vals)
-        # Remove possible membership created lines by super
-        line.membership_lines.unlink()
         if (line.invoice_id.type == 'out_invoice' and
                 line.product_id.membership and
                 line.product_id.membership_type == 'variable'):
             for i in range(int(line.quantity)):
                 membership_vals = self._prepare_membership_line(
                     line.invoice_id, line.product_id, price_unit, line.id)
-                memb_line_model.create(membership_vals)
+                if line.membership_lines:
+                    # There's already the super line
+                    line.membership_lines[0].write(membership_vals)
+                else:
+                    memb_line_model.create(membership_vals)
         return line
